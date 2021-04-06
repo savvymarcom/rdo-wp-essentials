@@ -4,9 +4,18 @@
 Plugin Name: WordPress Essentials - RDO
 Description: WordPress Essentials - RDO
 Author: Robin O'List
-Version: 1.01
+Version: 1.0.0
 
 */
+
+// Include our updater file
+include_once( plugin_dir_path( __FILE__ ) . 'updater.php');
+
+$updater = new Rdo_Updater( __FILE__ ); // instantiate our class
+$updater->set_username( 'savvymarcom' ); // set username
+$updater->set_repository( 'rdo-wp-essentials' ); // set repo
+$updater->initialize(); // initialize the updater
+
 
 
 if ( ! defined( 'RDOAYN_FILE' ) ) {
