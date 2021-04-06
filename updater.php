@@ -81,4 +81,43 @@ class Rdo_Updater {
         return $transient; // Return filtered transient
     }
 
+    public function plugin_popup( $result, $action, $args ) {
+        if( ! empty( $args->slug ) ) { // If there is a slug
+            if( $args->slug == current( explode( '/' , $this->basename ) ) ) { // And it's our slug
+                $this->get_repository_info(); // Get our repo info
+                // Set it to an array
+                $plugin = array(
+                    'name'              => $this->plugin["Name"],
+                    'slug'              => $this->basename,
+                    'version'           => $this->github_response['tag_name'],
+                    'author'            => $this->plugin["AuthorName"],
+                    'author_profile'    => $this->plugin["AuthorURI"],
+                    'last_updated'      => $this->github_response['published_at'],
+                    'homepage'          => $this->plugin["PluginURI"],
+                    'short_description' => $this->plugin["Description"],
+                    'sections'          => array( 
+                        'Description'   => $this->plugin["Description"],
+                        'Updates'       => $this->github_response['body'],
+                ),
+                'download_link'     => $this->github_response['zipball_url']
+            );
+            return (object) $plugin; // Return the data
+          }
+        }   
+        return $result; // Otherwise return default
+    }
+
+    public function after_install( $response, $hook_extra, $result ) {
+        global $wp_filesystem; // Get global FS object
+      
+        $install_directory = plugin_dir_path( $this->file ); // Our plugin directory 
+        $wp_filesystem->move( $result['destination'], $install_directory ); // Move files to the plugin dir
+        $result['destination'] = $install_directory; // Set the destination for the rest of the stack
+      
+        if ( $this->active ) { // If it was active
+            activate_plugin( $this->basename ); // Reactivate
+        }
+        return $result;
+    }
+
 }
