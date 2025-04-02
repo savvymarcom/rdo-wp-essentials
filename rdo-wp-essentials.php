@@ -4,7 +4,7 @@
 Plugin Name: WordPress Essentials - RDO
 Description: WordPress Essentials - RDO
 Author: Robin O'List
-Version: 1.0.2
+Version: 1.2.0
 
 */
 
